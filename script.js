@@ -7,6 +7,8 @@ var phrases = ["left", "right"];
 
 var resultPara = document.querySelector(".result");
 var diagnosticPara = document.querySelector(".output");
+var leftPara = document.querySelector(".left");
+var rightPara = document.querySelector(".right");
 
 var testBtn = document.querySelector("button");
 
@@ -41,10 +43,19 @@ function testSpeech() {
     if (phrases.includes(speechResult)) {
       resultPara.textContent = "Direction detected: " + speechResult;
       resultPara.style.background = "lime";
+      if (speechResult === "left") {
+        leftPara.style.background = "lime";
+        rightPara.style.background = "rgba(0,0,0,0.2)";
+      } else {
+        rightPara.style.background = "lime";
+        leftPara.style.background = "rgba(0,0,0,0.2)";
+      }
     } else {
       resultPara.textContent =
         'No direction detected. Say "left" or "right" to try again.';
       resultPara.style.background = "red";
+      leftPara.style.background = "rgba(0,0,0,0.2)";
+      rightPara.style.background = "rgba(0,0,0,0.2)";
     }
 
     console.log("Confidence: " + event.results[0][0].confidence);
