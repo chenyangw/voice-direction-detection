@@ -4,6 +4,7 @@ var SpeechRecognitionEvent =
   SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 
 var phrases = ["left", "right"];
+var speechResult = "";
 
 var resultPara = document.querySelector(".result");
 var diagnosticPara = document.querySelector(".output");
@@ -17,9 +18,12 @@ function randomPhrase() {
   return number;
 }
 
-function testSpeech() {
-  var direction = "unknown";
-
+/**
+ * Returns the word detected by the speech recognition
+ * @param {*} callback
+ * @returns {string} speechResult
+ */
+function testSpeech(callback) {
   testBtn.disabled = true;
   testBtn.textContent = "Test in progress";
   resultPara.textContent = "Left or Right?";
@@ -46,13 +50,9 @@ function testSpeech() {
       resultPara.textContent = "Direction detected: " + speechResult;
       resultPara.style.background = "lime";
       if (speechResult === "left") {
-        direction = "left";
-
         leftPara.style.background = "lime";
         rightPara.style.background = "rgba(0,0,0,0.2)";
       } else {
-        direction = "right";
-
         rightPara.style.background = "lime";
         leftPara.style.background = "rgba(0,0,0,0.2)";
       }
@@ -64,8 +64,9 @@ function testSpeech() {
       rightPara.style.background = "rgba(0,0,0,0.2)";
     }
 
-    console.log("---\ndirection: ", direction, "\n---");
+    console.log("---\nspeechResult=", speechResult, "\n---");
     console.log("Confidence: " + event.results[0][0].confidence);
+    callback(speechResult);
   };
 
   recognition.onspeechend = function () {
@@ -120,7 +121,18 @@ function testSpeech() {
     console.log("SpeechRecognition.onstart");
   };
 
-  return direction;
+  return speechResult;
 }
 
-testBtn.addEventListener("click", testSpeech);
+// testing the speech recognition function
+testBtn.addEventListener("click", function () {
+  let result = testSpeech(function (speechResult) {
+    if (speechResult === "left") {
+      console.log("***\nleft detected \n***");
+    } else if (speechResult === "right") {
+      console.log("***\nright detected \n***");
+    } else {
+      console.log("***\nno direction detected \n***");
+    }
+  });
+});
