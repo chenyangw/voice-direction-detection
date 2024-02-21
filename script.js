@@ -18,6 +18,8 @@ function randomPhrase() {
 }
 
 function testSpeech() {
+  var direction = "unknown";
+
   testBtn.disabled = true;
   testBtn.textContent = "Test in progress";
   resultPara.textContent = "Left or Right?";
@@ -44,9 +46,13 @@ function testSpeech() {
       resultPara.textContent = "Direction detected: " + speechResult;
       resultPara.style.background = "lime";
       if (speechResult === "left") {
+        direction = "left";
+
         leftPara.style.background = "lime";
         rightPara.style.background = "rgba(0,0,0,0.2)";
       } else {
+        direction = "right";
+
         rightPara.style.background = "lime";
         leftPara.style.background = "rgba(0,0,0,0.2)";
       }
@@ -58,6 +64,7 @@ function testSpeech() {
       rightPara.style.background = "rgba(0,0,0,0.2)";
     }
 
+    console.log("---\ndirection: ", direction, "\n---");
     console.log("Confidence: " + event.results[0][0].confidence);
   };
 
@@ -112,6 +119,8 @@ function testSpeech() {
     //Fired when the speech recognition service has begun listening to incoming audio with intent to recognize grammars associated with the current SpeechRecognition.
     console.log("SpeechRecognition.onstart");
   };
+
+  return direction;
 }
 
 testBtn.addEventListener("click", testSpeech);
