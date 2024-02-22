@@ -11,7 +11,7 @@ var diagnosticPara = document.querySelector(".output");
 var leftPara = document.querySelector(".left");
 var rightPara = document.querySelector(".right");
 
-var testBtn = document.querySelector("button");
+var testBtn = document.querySelector(".recordButton");
 
 function randomPhrase() {
   var number = Math.floor(Math.random() * phrases.length);
@@ -25,11 +25,14 @@ function randomPhrase() {
  */
 function testSpeech(callback) {
   testBtn.disabled = true;
-  testBtn.textContent = "Test in progress";
-  resultPara.textContent = "Left or Right?";
-  resultPara.style.background = "rgba(0,0,0,0.2)";
-  diagnosticPara.textContent = "...diagnostic messages";
-
+  testBtn.textContent = "Record in progress";
+  if (resultPara) {
+    resultPara.textContent = "Left or Right?";
+    resultPara.style.background = "rgba(0,0,0,0.2)";
+  }
+  if (diagnosticPara) {
+    diagnosticPara.textContent = "...diagnostic messages";
+  }
   const grammar = `#JSGF V1.0; grammar phrase; public <color> = ${phrases.join(
     " | "
   )};`;
@@ -45,23 +48,41 @@ function testSpeech(callback) {
 
   recognition.onresult = function (event) {
     var speechResult = event.results[0][0].transcript.toLowerCase();
-    diagnosticPara.textContent = "Speech received: " + speechResult + ".";
+    if (diagnosticPara) {
+      diagnosticPara.textContent = "Speech received: " + speechResult + ".";
+    }
     if (phrases.includes(speechResult)) {
-      resultPara.textContent = "Direction detected: " + speechResult;
-      resultPara.style.background = "lime";
+      if (resultPara) {
+        resultPara.textContent = "Direction detected: " + speechResult;
+        resultPara.style.background = "lime";
+      }
       if (speechResult === "left") {
-        leftPara.style.background = "lime";
-        rightPara.style.background = "rgba(0,0,0,0.2)";
+        if (leftPara) {
+          leftPara.style.background = "lime";
+        }
+        if (rightPara) {
+          rightPara.style.background = "rgba(0,0,0,0.2)";
+        }
       } else {
-        rightPara.style.background = "lime";
-        leftPara.style.background = "rgba(0,0,0,0.2)";
+        if (rightPara) {
+          rightPara.style.background = "lime";
+        }
+        if (leftPara) {
+          leftPara.style.background = "rgba(0,0,0,0.2)";
+        }
       }
     } else {
-      resultPara.textContent =
-        'No direction detected. Say "left" or "right" to try again.';
-      resultPara.style.background = "red";
-      leftPara.style.background = "rgba(0,0,0,0.2)";
-      rightPara.style.background = "rgba(0,0,0,0.2)";
+      if (resultPara) {
+        resultPara.textContent =
+          'No direction detected. Say "left" or "right" to try again.';
+        resultPara.style.background = "red";
+      }
+      if (leftPara) {
+        leftPara.style.background = "rgba(0,0,0,0.2)";
+      }
+      if (rightPara) {
+        rightPara.style.background = "rgba(0,0,0,0.2)";
+      }
     }
 
     console.log("---\nspeechResult=", speechResult, "\n---");
@@ -72,12 +93,12 @@ function testSpeech(callback) {
   recognition.onspeechend = function () {
     recognition.stop();
     testBtn.disabled = false;
-    testBtn.textContent = "Start new test";
+    testBtn.textContent = "Start new recording";
   };
 
   recognition.onerror = function (event) {
     testBtn.disabled = false;
-    testBtn.textContent = "Start new test";
+    testBtn.textContent = "Start new recording";
     diagnosticPara.textContent =
       "Error occurred in recognition: " + event.error;
   };
