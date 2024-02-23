@@ -145,15 +145,21 @@ function testSpeech(callback) {
   return speechResult;
 }
 
+var directionDetected = "undefined";
 // testing the speech recognition function
 testBtn.addEventListener("click", function () {
   let result = testSpeech(function (speechResult) {
     if (speechResult === "left") {
       console.log("***\nleft detected \n***");
+      directionDetected = "left";
     } else if (speechResult === "right") {
       console.log("***\nright detected \n***");
+      directionDetected = "right";
     } else {
       console.log("***\nno direction detected \n***");
+      directionDetected = "undefined";
     }
   });
 });
+
+export { testSpeech, directionDetected };
